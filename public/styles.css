@@ -1,0 +1,229 @@
+/* Machaca — gimnasio de minijuegos. Look de sala recreativa: fondo tinta violeta,
+   acento coral, y cada juego con su color propio. Tema único y pintado explícitamente. */
+:root{
+  --fondo:#0E0B16; --fondo-2:#141020;
+  --panel:#191428; --panel-2:#221B38; --panel-3:#2E2549;
+  --tinta:#F4F0FF; --tinta-2:#CFC6EC; --apagado:#948BB8;
+  --coral:#FF5C4D; --ambar:#FFD24B; --menta:#45E0B0; --lila:#8B7BFF;
+  --linea:#2A2340; --linea-suave:#1F1934;
+  --sombra:0 2px 4px rgba(0,0,0,.45), 0 18px 40px -24px rgba(0,0,0,.9);
+  --r:14px;
+  --juego:var(--coral);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--fondo); color:var(--tinta);
+  font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  overscroll-behavior:none; -webkit-tap-highlight-color:transparent;
+}
+/* Durante la partida el móvil no debe hacer scroll ni rebote */
+body.jugando{position:fixed; inset:0; width:100%; overflow:hidden}
+h1,h2,h3{margin:0; font-family:"Bricolage Grotesque","Figtree",sans-serif; letter-spacing:-.02em; text-wrap:balance}
+.cifra,.mono{font-family:"DM Mono",ui-monospace,Menlo,monospace; font-variant-numeric:tabular-nums}
+button{font:inherit; color:inherit; cursor:pointer}
+:focus-visible{outline:2px solid var(--ambar); outline-offset:3px; border-radius:6px}
+a{color:var(--coral)}
+
+/* ------------------------------------------------------------------ marco */
+.marco{max-width:1080px; margin:0 auto; padding:0 18px 110px; padding-bottom:calc(110px + env(safe-area-inset-bottom))}
+body.jugando .marco{padding-bottom:0; height:100dvh; display:flex; flex-direction:column}
+body.jugando #vista{flex:1; min-height:0; display:flex; flex-direction:column}
+
+header.cabecera{
+  display:flex; align-items:center; gap:14px; padding:20px 0 14px; position:sticky; top:0; z-index:20;
+  background:linear-gradient(var(--fondo) 72%, rgba(14,11,22,0));
+  padding-top:calc(20px + env(safe-area-inset-top));
+}
+body.jugando header.cabecera{display:none}
+.logo{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit}
+.logo .marca{
+  width:36px; height:36px; border-radius:11px; display:grid; place-items:center;
+  background:var(--coral); color:#2A0A06; font-family:"Bricolage Grotesque",sans-serif;
+  font-weight:800; font-size:20px; box-shadow:0 6px 18px -6px var(--coral);
+}
+.logo b{font-family:"Bricolage Grotesque",sans-serif; font-size:20px; font-weight:800; letter-spacing:-.04em}
+.logo span{display:block; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--apagado)}
+.cabecera .hueco{flex:1}
+
+.yo{
+  display:flex; align-items:center; gap:9px; background:var(--panel); border:1px solid var(--linea);
+  border-radius:999px; padding:6px 8px 6px 6px;
+}
+.yo .ficha{
+  width:28px; height:28px; border-radius:50%; display:grid; place-items:center; flex:none;
+  background:var(--lila); color:#140F28; font-weight:800; font-size:12px;
+}
+.yo .nom{font-size:13.5px; font-weight:600; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.yo button{background:none; border:none; color:var(--apagado); font-size:12px; padding:0 4px}
+
+/* ------------------------------------------------------------------- reto */
+.reto{
+  background:linear-gradient(120deg, var(--panel-2), var(--panel));
+  border:1px solid var(--linea); border-radius:var(--r); padding:18px 20px;
+  display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin:6px 0 26px;
+  box-shadow:var(--sombra); position:relative; overflow:hidden;
+}
+.reto::after{
+  content:''; position:absolute; inset:-40% -10% auto auto; width:220px; height:220px; border-radius:50%;
+  background:radial-gradient(circle, color-mix(in srgb, var(--juego) 45%, transparent), transparent 70%);
+  pointer-events:none;
+}
+.reto .etq{font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--ambar); font-weight:700}
+.reto h2{font-size:26px; margin:4px 0 4px}
+.reto p{margin:0; color:var(--tinta-2); font-size:14.5px; max-width:52ch}
+.reto .hueco{flex:1; min-width:20px}
+
+/* ---------------------------------------------------------------- catálogo */
+.filtros{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px}
+.filtros button{
+  background:var(--panel); border:1px solid var(--linea); color:var(--tinta-2);
+  border-radius:999px; padding:7px 14px; font-size:13px;
+}
+.filtros button[aria-pressed="true"]{background:var(--tinta); color:var(--fondo); border-color:var(--tinta); font-weight:700}
+
+.rejilla{display:grid; grid-template-columns:repeat(auto-fill,minmax(258px,1fr)); gap:14px}
+.carta{
+  --juego:var(--coral);
+  background:var(--panel); border:1px solid var(--linea); border-radius:var(--r);
+  padding:0 0 14px; text-align:left; overflow:hidden; box-shadow:var(--sombra);
+  display:flex; flex-direction:column; gap:11px; transition:transform .12s ease, border-color .12s ease;
+}
+.carta:hover{transform:translateY(-2px); border-color:var(--juego)}
+.carta .tapa{
+  height:76px; display:flex; align-items:center; gap:12px; padding:0 16px;
+  background:linear-gradient(100deg, color-mix(in srgb, var(--juego) 26%, var(--panel)), var(--panel));
+  border-bottom:1px solid var(--linea-suave);
+}
+.carta .icono{
+  width:42px; height:42px; border-radius:12px; display:grid; place-items:center; flex:none;
+  background:var(--juego); color:#12101B; font-size:21px; font-weight:800;
+}
+.carta h3{font-size:18px}
+.carta .fam{font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--apagado)}
+.carta p{margin:0; padding:0 16px; color:var(--tinta-2); font-size:13.5px; line-height:1.45; flex:1}
+.carta .pie{display:flex; align-items:center; gap:10px; padding:0 16px; flex-wrap:wrap}
+.marca-chip{
+  background:var(--panel-2); border:1px solid var(--linea); border-radius:8px;
+  padding:5px 9px; font-size:12px; color:var(--tinta-2);
+}
+.marca-chip b{color:var(--tinta); font-family:"DM Mono",monospace}
+.btn{
+  background:var(--juego); color:#12101B; border:none; border-radius:10px;
+  padding:10px 16px; font-weight:800; font-size:14px; letter-spacing:-.01em;
+}
+.btn.grande{padding:14px 24px; font-size:16px; border-radius:12px}
+.btn.suave{background:var(--panel-2); color:var(--tinta); border:1px solid var(--linea)}
+.btn:disabled{opacity:.45}
+
+/* ------------------------------------------------------------------- juego */
+.sala{display:flex; flex-direction:column; gap:12px; padding-top:6px; flex:1; min-height:0}
+.sala .instr{color:var(--apagado); font-size:13px; margin:0; text-align:center}
+.pie-juego{
+  display:flex; gap:10px; padding-bottom:env(safe-area-inset-bottom);
+}
+.pie-juego .btn{flex:1; padding:15px 12px; font-size:16px}
+.hud{
+  display:flex; align-items:center; gap:12px; background:var(--panel); border:1px solid var(--linea);
+  border-radius:12px; padding:10px 14px; flex-wrap:wrap;
+}
+.hud .dato{display:flex; flex-direction:column; line-height:1.15}
+.hud .dato span{font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--apagado)}
+.hud .dato b{font-family:"DM Mono",monospace; font-size:19px}
+.hud .hueco{flex:1}
+.barra-tiempo{height:5px; background:var(--panel-3); border-radius:999px; overflow:hidden}
+.barra-tiempo i{display:block; height:100%; background:var(--juego); transition:width .1s linear}
+
+.tablero{
+  position:relative; background:var(--fondo-2); border:1px solid var(--linea); border-radius:var(--r);
+  flex:1; min-height:min(58vh,470px); display:grid; place-items:center; overflow:hidden;
+  touch-action:none; user-select:none; -webkit-user-select:none;
+}
+.tablero.pulsable{cursor:pointer}
+.centro{text-align:center; padding:26px; max-width:38ch}
+.centro h2{font-size:clamp(24px,5vw,36px); margin-bottom:8px}
+.centro p{color:var(--tinta-2); margin:0 0 18px; font-size:14.5px}
+.grande-cifra{font-family:"DM Mono",monospace; font-size:clamp(44px,12vw,84px); line-height:1; font-weight:500}
+
+.diana{position:absolute; border-radius:50%; background:var(--juego); box-shadow:0 0 0 4px color-mix(in srgb, var(--juego) 30%, transparent)}
+.casilla{
+  border-radius:12px; background:var(--panel-2); border:2px solid var(--linea);
+  display:grid; place-items:center; font-family:"DM Mono",monospace; font-size:20px; transition:background .08s, transform .08s;
+}
+.casilla.viva{background:var(--juego); border-color:var(--juego); color:#12101B; transform:scale(1.03)}
+.casilla.mal{background:var(--coral); border-color:var(--coral)}
+.malla{display:grid; gap:10px; padding:16px; width:100%; max-width:420px}
+
+.opciones{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; width:100%; max-width:420px; padding:16px}
+.opcion{
+  background:var(--panel-2); border:1px solid var(--linea); border-radius:12px; padding:16px 10px;
+  font-size:20px; font-weight:700; font-family:"DM Mono",monospace;
+}
+.opcion.color{height:64px}
+.opcion:active{transform:scale(.97)}
+
+.aviso{position:absolute; top:12px; left:50%; transform:translateX(-50%); font-size:13px; color:var(--apagado)}
+.flotante{position:absolute; font-family:"DM Mono",monospace; font-weight:600; pointer-events:none; animation:sube .6s ease-out forwards}
+@keyframes sube{to{transform:translateY(-34px); opacity:0}}
+
+/* ---------------------------------------------------------------- ranking */
+.tabla{background:var(--panel); border:1px solid var(--linea); border-radius:var(--r); overflow:hidden}
+.fila{display:flex; align-items:center; gap:12px; padding:11px 15px; border-bottom:1px solid var(--linea-suave); font-size:14px}
+.fila:last-child{border-bottom:none}
+.fila.tu{background:color-mix(in srgb, var(--juego) 16%, var(--panel))}
+.fila .pos{font-family:"DM Mono",monospace; color:var(--apagado); width:30px; flex:none}
+.fila .pos.podio{color:var(--ambar); font-weight:700}
+.fila .nom{flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.fila .pts{font-family:"DM Mono",monospace; font-weight:600}
+
+.pie-pagina{margin-top:34px; padding-top:18px; border-top:1px solid var(--linea-suave); color:var(--apagado); font-size:12.5px; line-height:1.6}
+
+/* ------------------------------------------------------------------ modal */
+.velo{position:fixed; inset:0; background:rgba(8,6,14,.86); display:grid; place-items:center; padding:18px; z-index:60}
+.caja{background:var(--panel); border:1px solid var(--linea); border-radius:var(--r); padding:24px; width:min(420px,100%); box-shadow:var(--sombra)}
+.caja h2{font-size:22px; margin-bottom:6px}
+.caja p{color:var(--tinta-2); font-size:14px; margin:0 0 16px}
+.caja input{
+  width:100%; background:var(--fondo-2); border:1px solid var(--linea); color:var(--tinta);
+  border-radius:10px; padding:12px 14px; font-size:16px; margin-bottom:12px;
+}
+
+@media (max-width:620px){
+  .marco{padding:0 12px; padding-bottom:calc(90px + env(safe-area-inset-bottom))}
+  .rejilla{grid-template-columns:1fr; gap:12px}
+  .reto{padding:16px; gap:12px}
+  .reto h2{font-size:22px}
+  .reto .btn.grande{width:100%; padding:15px}
+  .cabecera{padding-bottom:10px}
+  .logo .marca{width:32px; height:32px; font-size:18px}
+  .logo b{font-size:18px}
+
+  /* partida a pantalla completa */
+  body.jugando .marco{padding:8px 10px 0}
+  .sala{gap:10px}
+  .hud{padding:9px 12px; gap:10px; border-radius:12px}
+  .hud .dato b{font-size:17px}
+  .hud .btn.suave{display:none}          /* salir vive en la barra de abajo */
+  .tablero{min-height:0}
+  .sala .instr{display:none}
+
+  /* objetivos táctiles grandes */
+  .opciones{gap:12px; padding:12px; max-width:none}
+  .opcion{padding:22px 10px; font-size:22px; border-radius:14px}
+  .opcion.color{height:76px}
+  .malla{gap:12px; padding:12px; max-width:none}
+  .carta .pie{gap:8px}
+  .carta .btn{padding:12px 18px}
+  .filtros{overflow-x:auto; flex-wrap:nowrap; padding-bottom:4px; scrollbar-width:none}
+  .filtros::-webkit-scrollbar{display:none}
+  .filtros button{white-space:nowrap; padding:9px 15px}
+}
+
+/* pantallas muy bajas en horizontal */
+@media (max-height:520px) and (orientation:landscape){
+  .opcion{padding:12px 8px; font-size:18px}
+  .opcion.color{height:52px}
+}

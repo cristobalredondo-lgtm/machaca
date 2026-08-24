@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: machaca
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: "echo sin dependencias"
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "24.13.1"

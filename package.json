@@ -1,0 +1,12 @@
+{
+  "name": "machaca",
+  "version": "0.1.0",
+  "description": "Gimnasio de minijuegos: entrena reflejos, memoria y cálculo antes de competir",
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "engines": { "node": ">=22.5.0" },
+  "license": "ISC"
+}
